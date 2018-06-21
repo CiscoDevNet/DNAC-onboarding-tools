@@ -33,7 +33,7 @@ def get_auth_token(controller_ip=DNAC, username=DNAC_USER, password=DNAC_PASSWOR
     """
 
     login_url = "https://{0}:{1}/api/system/v1/auth/token".format(controller_ip, DNAC_PORT)
-    result = requests.post(url=login_url, auth=HTTPBasicAuth(DNAC_USER, DNAC_PASSWORD), verify=False)
+    result = requests.post(url=login_url, auth=HTTPBasicAuth(DNAC_USER, DNAC_PASSWORD), verify=False, timeout=20)
     result.raise_for_status()
 
     token = result.json()["Token"]
@@ -53,6 +53,14 @@ def post(dnac, url, payload):
     posturl = create_url(url)
     headers = {'x-auth-token': dnac['token'], "content-type" : "application/json"}
     response = requests.post(posturl, headers=headers, data=json.dumps(payload), verify=False)
+    response.raise_for_status()
+    return response
+
+def put(dnac, url, payload):
+    puturl = create_url(url)
+
+    headers = {'x-auth-token': dnac['token'], "Content-Type" : "application/json"}
+    response = requests.put(puturl, headers=headers, data=payload, verify=False)
     response.raise_for_status()
     return response
 

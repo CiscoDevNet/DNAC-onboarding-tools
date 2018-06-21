@@ -19,7 +19,7 @@ def find_device(dnac,deviceSerial):
 
 def delete_device(dnac, deviceId):
     response = delete(dnac, "onboarding/pnp-device/{}".format(deviceId))
-    print response.json()
+    return response.json()['deviceInfo']['state']
 
 def find_and_delete(dnac, devices):
 
@@ -27,12 +27,13 @@ def find_and_delete(dnac, devices):
     try:
         reader = csv.DictReader(f)
         for device_row in reader:
-            print ("Variables:",device_row)
+            #print ("Variables:",device_row)
 
             deviceId = find_device(dnac, device_row['serial'])
             if deviceId is not None:
-                print "deleting:{}:{}".format(device_row['serial'], deviceId)
-                delete_device(dnac, deviceId)
+                print "deleting:{}: {} Status:".format(device_row['serial'], deviceId),
+                status = delete_device(dnac, deviceId)
+                print status
 
     finally:
         f.close()
@@ -49,3 +50,4 @@ if __name__ == "__main__":
 
     print ("##########################")
     find_and_delete(dnac, devices=args.devices)
+

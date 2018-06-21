@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+from __future__ import print_function
 import csv
 import json
 import requests
@@ -49,17 +49,17 @@ def claim_device(dnac,deviceId, configId, workflowId, params):
 	"imageId": None,
 	"populateInventory": True
 }
-    print json.dumps(payload, indent=2)
+    #print json.dumps(payload, indent=2)
 
     claim = post(dnac,"onboarding/pnp-device/claim", payload)
-    print claim.json()
+    return claim.json()['message']
 
 def get_workflow(dnac,workflowName):
     response = get (dnac, "onboarding/pnp-workflow")
     for workflow in response.json():
         if workflow['name'] == workflowName:
             workflowId = workflow['id']
-            print json.dumps(workflow, indent=4)
+            #print json.dumps(workflow, indent=4)
             for tasks in workflow['tasks']:
                 configId = tasks['configInfo']['configId']
             return workflowId, configId
@@ -72,7 +72,7 @@ def get_template(dnac, configId, supplied_params):
     for vars in response.json()['templateParams']:
         name = vars['parameterName']
         params.append({"key": name, "value": supplied_params[name]})
-    print params
+    #print params
     return params
 
 def create_and_upload(dnac, devices):
@@ -81,7 +81,7 @@ def create_and_upload(dnac, devices):
     try:
         reader = csv.DictReader(f)
         for device_row in reader:
-            print ("Variables:",device_row)
+            #print ("Variables:",device_row)
             workflowId, configId = get_workflow(dnac, device_row['workflow'])
 
             params = get_template(dnac, configId, device_row)
@@ -89,12 +89,15 @@ def create_and_upload(dnac, devices):
             deviceId = add_device(dnac, device_row['name'], device_row['serial'], device_row['pid'])
             if deviceId is not None:
                 #claim
-                claim_device(dnac, deviceId, configId, workflowId, params)
-
-
-            #create_rule (apic, device_row, project_id, file_id)
-            print()
-
+                claim_status = claim_device(dnac, deviceId, configId, workflowId, params)
+                if "Claimed" in claim_status:
+                    status = "PLANNED"
+                else:
+                    status = "FAILED"
+                print ('Device:{} name:{} workflow:{} Status:{}'.format(device_row['serial'],
+                                                                    device_row['name'],
+                                                                    device_row['workflow'],
+                                                                    status))
     finally:
         f.close()
 
