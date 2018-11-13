@@ -21,5 +21,8 @@ creates a pnp device rule and then claims it with a workflow and template variab
 
 you need to define the workflow and the template used.
 
-./11_delete.py work_files/test.csv
+./12_delete.py <serialnumber>
+shows the rendered configuration for the device with serial number <serialnumber>.
+
+./12_delete.py work_files/test.csv
 cleans up afterwards. deleting pnp rules for all devices in the csv file
