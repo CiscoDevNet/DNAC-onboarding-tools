@@ -64,7 +64,7 @@ def get_workflow(dnac,workflowName):
                 configId = tasks['configInfo']['configId']
             return workflowId, configId
 
-    raise ValueError("Cannot find template %s", workflow)
+    raise ValueError("Cannot find template:{}".format(workflowName))
 
 def get_template(dnac, configId, supplied_params):
     params=[]
@@ -82,7 +82,12 @@ def create_and_upload(dnac, devices):
         reader = csv.DictReader(f)
         for device_row in reader:
             #print ("Variables:",device_row)
-            workflowId, configId = get_workflow(dnac, device_row['workflow'])
+
+            try:
+                workflowId, configId = get_workflow(dnac, device_row['workflow'])
+            except ValueError as e:
+                print("##ERROR {},{}: {}".format(device_row['name'],device_row['serial'], e))
+                continue
 
             params = get_template(dnac, configId, device_row)
 
