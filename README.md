@@ -18,3 +18,6 @@ A simple example of a workflow would include an initial configuration template, 
 The script will recognise template variables and fill them in from the CSV file.
 
 
+## PnP-BulkConfig-128
+Modified for version 1.2.8 which integrates the onboarding process into provisioning.
+Instead of a workflow, uses a "site" and a day-0 template to configure the device.
