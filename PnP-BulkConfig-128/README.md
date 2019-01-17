@@ -17,9 +17,11 @@ When the device is connected to the network, it will discover DNA-C and begin th
 
 DNA-C will recognise the serial number of the device, and assign the device to a site, and deploy the Day0 template.
 
-A simple example could include an initial configuration template, which contains varaibles.
+A simple example could include an initial configuration template, which contains variables.  
+
 The script will recognise template variables and fill them in from the CSV file.
 
+NOTE: Make sure the template is not empty.
 
 ## work_files
 Contains the inventory files.  These are CSV files with the device name, serial number, pid, Location, workflow and any variables required for the workflow template

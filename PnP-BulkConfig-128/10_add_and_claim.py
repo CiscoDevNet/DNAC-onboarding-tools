@@ -70,6 +70,7 @@ def find_template_name(data, templateName):
     for attr in data:
         if 'key' in attr:
             if attr['key'] == 'day0.templates':
+
                 for dev in attr['attribs']:
                     # DeviceFamily/DeviceSeries/DeviceType
                     template = dev['attribs'][0]['attribs'][0]['attribs'][0]
@@ -78,18 +79,28 @@ def find_template_name(data, templateName):
     raise ValueError("Cannot find template named:{}".format(templateName))
 
 def find_site_template(dnac, siteId, templateName):
+
     response = get(dnac,"siteprofile/site/{}".format(siteId))
+
+    logger.debug("siteprofile {} returned:".format(siteId))
+    logger.debug(json.dumps(response.json(), indent=2))
+
     if response.json()['response'] == []:
         raise ValueError("Cannot find Network profile for siteId:{}".format(siteId))
 
+    # need to be careful here.  WLAN profiles also apply to a site.  need to filter them
+    wired_site_profile = [ site for site in response.json()['response'] if site['namespace'] != "wlan"]
+
     # now need to find the template
-    data = response.json()['response'][0]['profileAttributes']
+    data = wired_site_profile[0]['profileAttributes']
     return find_template_name(data, templateName)
 
 
 def get_template(dnac, configId, supplied_params):
     params=[]
     response = get(dnac, "template-programmer/template/{}".format(configId))
+    logger.debug("template {} returned:".format(configId))
+    logger.debug(json.dumps(response.json(),indent=2))
     for vars in response.json()['templateParams']:
         name = vars['parameterName']
         params.append({"key": name, "value": supplied_params[name]})
