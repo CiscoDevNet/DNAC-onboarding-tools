@@ -39,6 +39,7 @@ def add_device(dnac, name, serial, pid):
 		}
 	}
 }]
+    logger.debug(json.dumps(payload))
     device = post(dnac, "onboarding/pnp-device/import", payload)
     try:
         deviceId = device.json()['successList'][0]['id']
@@ -60,7 +61,7 @@ def claim_device(dnac,deviceId, configId, siteId, params):
          "imageInfo": {"imageId": "", "skip": False},
          "configInfo": {"configId": configId, "configParameters": params}
 }
-    #print json.dumps(payload, indent=2)
+    logger.debug(json.dumps(payload, indent=2))
 
     claim = post(dnac,"onboarding/pnp-device/site-claim", payload)
 
