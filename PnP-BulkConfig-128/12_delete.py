@@ -15,7 +15,7 @@ def find_device(dnac,deviceSerial):
     try:
         return response.json()[0]['id']
     except IndexError as e:
-        print "Cannot find serial:{}".format(deviceSerial)
+        print ("Cannot find serial:{}".format(deviceSerial))
 
 def delete_device(dnac, deviceId):
     response = delete(dnac, "onboarding/pnp-device/{}".format(deviceId))
@@ -34,9 +34,9 @@ def find_and_delete(dnac, devices):
 
             deviceId = find_device(dnac, device_row['serial'])
             if deviceId is not None:
-                print "deleting:{}: {} Status:".format(device_row['serial'], deviceId),
+                print ("deleting:{}: {} Status:".format(device_row['serial'], deviceId),end='')
                 status = delete_device(dnac, deviceId)
-                print status
+                print (status)
 
     finally:
         f.close()
