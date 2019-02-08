@@ -79,9 +79,9 @@ def create_workflow(dnac, device_ip, interface, file_id):
 }
     logging.debug(json.dumps(payload))
     response = post(dnac, "dna/intent/api/v1/onboarding/pnp-workflow", payload)
-    print(json.dumps(response.json()))
+    logging.debug(json.dumps(response.json()))
     workflow_id=response.json()['id']
-
+    print ("Workflow created, id {}".format(workflow_id))
     return workflow_id
 
 def claim_device(dnac, device_id, file_id, workflow_id):
