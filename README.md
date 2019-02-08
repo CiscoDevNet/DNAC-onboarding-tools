@@ -21,3 +21,11 @@ The script will recognise template variables and fill them in from the CSV file.
 ## PnP-BulkConfig-128
 Modified for version 1.2.8 which integrates the onboarding process into provisioning.
 Instead of a workflow, uses a "site" and a day-0 template to configure the device.
+
+## PnPNoSerialClaim
+a tool to allow auto-claiming of devices based on IP address and CDP neighbour uplink (as opposed to serialNumber)
+
+It is only possible to do this using unclaimed flow as you need to get the IP address and CDP neighbour information after the 
+device contacts Cisco DNA Center.
+
+This approach uses a workflow (configured via API) and mapped into a static config file.
