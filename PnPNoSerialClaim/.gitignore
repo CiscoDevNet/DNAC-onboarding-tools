@@ -1,0 +1,3 @@
+*.pyc
+fake_data.py
+__pycache__/

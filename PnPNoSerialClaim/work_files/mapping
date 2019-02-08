@@ -1,0 +1,4 @@
+subnet,upLink,configFile
+10.10.50.0/24,*,new-perth.cfg
+10.10.14.0/24,GigabitEthernet1/0/5,access1.cfg
+10.10.14.0/24,GigabitEthernet1/0/20,access2.cfg
