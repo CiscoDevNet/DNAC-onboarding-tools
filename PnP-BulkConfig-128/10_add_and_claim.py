@@ -24,7 +24,11 @@ class SiteCache:
         else:
             raise ValueError("Cannot find site:{}".format(fqSiteName))
 
-def add_device(dnac, name, serial, pid):
+def add_device(dnac, name, serial, pid, top_of_stack):
+    if top_of_stack is None:
+        stack = False
+    else:
+        stack = True
     payload = [{
 	"deviceInfo": {
 		"name": name,
@@ -32,7 +36,7 @@ def add_device(dnac, name, serial, pid):
 		"pid": pid,
 		"sudiRequired": False,
 		"userSudiSerialNos": [],
-		"stack": False,
+		"stack": stack,
 		"aaaCredentials": {
 			"username": "",
 			"password": ""
@@ -53,7 +57,8 @@ def add_device(dnac, name, serial, pid):
 # type="stackSwitch"
 # "licenseLevel":"",
 # "topOfStackSerialNumber":"",
-def claim_device(dnac,deviceId, configId, siteId, params):
+def claim_device(dnac,deviceId, configId, siteId, top_of_stack, params):
+
     payload = {
         "siteId": siteId,
          "deviceId": deviceId,
@@ -61,6 +66,9 @@ def claim_device(dnac,deviceId, configId, siteId, params):
          "imageInfo": {"imageId": "", "skip": False},
          "configInfo": {"configId": configId, "configParameters": params}
 }
+    if top_of_stack is not None:
+        payload['type'] = "StackSwitch"
+        payload['topOfStackSerialNumber'] = top_of_stack
     logger.debug(json.dumps(payload, indent=2))
 
     claim = post(dnac,"onboarding/pnp-device/site-claim", payload)
@@ -126,10 +134,15 @@ def create_and_upload(dnac, site_cache, devices):
             configId = find_site_template(dnac, siteId, device_row['templateName'])
             params = get_template(dnac, configId, device_row)
 
-            deviceId = add_device(dnac, device_row['name'], device_row['serial'], device_row['pid'])
+            if 'topOfStack' in device_row:
+                top_of_stack = device_row['topOfStack']
+            else:
+                top_of_stack = None
+            # add device to PnP
+            deviceId = add_device(dnac, device_row['name'], device_row['serial'], device_row['pid'], top_of_stack)
             if deviceId is not None:
-                #claim
-                claim_status = claim_device(dnac, deviceId, configId, siteId, params)
+                #claim the device if sucessfully added
+                claim_status = claim_device(dnac, deviceId, configId, siteId, top_of_stack, params)
                 if "Claimed" in claim_status:
                     status = "PLANNED"
                 else:

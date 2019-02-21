@@ -1,0 +1,2 @@
+name,serial,pid,topOfStack,siteName,templateName,hostname,loopback
+auto_python1,12345678901,WS-C3650,12345678901,Global/EU/Barcelona,basic,pnp-stack,10.10.100.200
