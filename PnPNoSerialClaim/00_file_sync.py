@@ -82,7 +82,9 @@ def get_sha1(file):
 
 def process_namespace(dnac, namespace):
 
-    rootDir = DIR + "/" + namespace + "s"
+    # fix for windows
+    #rootDir = DIR + "/" + namespace + "s"
+    rootDir = os.path.join(DIR, namespace + "s")
 
     if not os.path.isdir(rootDir):
         print("No directory for {rootDir}, skipping".format(rootDir=rootDir))
@@ -96,7 +98,10 @@ def process_namespace(dnac, namespace):
             print("Uploaded File:{file} ({id})".format(file=result['response']['name'],id=result['response']['id']))
         else:
             # need to look at checksum to see if need to update
-            sha1 = get_sha1(rootDir+ '/' + filename)
+            # fix for windows
+            #sha1 = get_sha1(rootDir+ '/' + filename)
+            sha1 = get_sha1(os.path.join(rootDir,filename))
+
             #print (filename, sha1, f.sha1)
             if sha1 != f.sha1:
                 result = f.update()

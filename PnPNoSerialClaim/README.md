@@ -67,12 +67,6 @@ Can now run the script and the workflows will be created (using the configuratio
 ```buildoutcfg
 $ ./no_serial_claim.py work_files/mapping.adam 
 Using device file: work_files/mapping.adam
-OrderedDict([('subnet', '10.10.50.0/24'), ('upLink', '*'), ('configFile', 'new-perth.cfg')])
-a623c7e2-339e-4a96-9d96-b331e834e517
-OrderedDict([('subnet', '10.10.14.0/24'), ('upLink', 'GigabitEthernet1/0/5'), ('configFile', 'pnp-stack.cfg')])
-4b5aac74-b9c9-434b-b764-de99cf0050e4
-OrderedDict([('subnet', '10.10.14.0/24'), ('upLink', 'GigabitEthernet1/0/20'), ('configFile', 'pnp-9k.cfg')])
-dad21f4e-c8bf-4bc5-afc6-9b44f7ff01f1
 ##########################
 Trying to find mapping for 10.10.14.6
 No Link match upstream
