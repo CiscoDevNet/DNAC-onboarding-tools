@@ -76,15 +76,21 @@ def claim_device(dnac,deviceId, configId, siteId, top_of_stack, params):
     return claim.json()['response']
 
 def find_template_name(data, templateName):
+
     for attr in data:
         if 'key' in attr:
             if attr['key'] == 'day0.templates':
-
                 for dev in attr['attribs']:
                     # DeviceFamily/DeviceSeries/DeviceType
-                    template = dev['attribs'][0]['attribs'][0]['attribs'][0]
-                    if template['attribs'][1]['value'] == templateName:
-                       return template['value']
+                    #template = dev['attribs'][0]['attribs'][0]['attribs'][0]
+                    for template in dev['attribs'][0]['attribs'][0]['attribs']:
+                        if template['key'] == 'template.id':
+                            for templ_attrs in template['attribs']:
+                                if templ_attrs['key'] == 'template.name' and templ_attrs['value'] == templateName:
+                                    return template['value']
+
+                    #if template['attribs'][1]['value'] == templateName:
+                       #return template['value']
     raise ValueError("Cannot find template named:{}".format(templateName))
 
 def find_site_template(dnac, siteId, templateName):
