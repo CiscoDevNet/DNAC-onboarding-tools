@@ -60,7 +60,7 @@ def add_device(dnac, name, serial, pid, top_of_stack):
 def claim_device(dnac,deviceId, configId, siteId, top_of_stack, image, params):
     if image is not None and image is not "":
         logging.debug("looking for imageid for {}".format(image))
-        response = get(dnac, 'image/importation?imageName={0}'.format(image))
+        response = get(dnac, 'image/importation?name={0}'.format(image))
         try:
             imageid = response.json()['response'][0]['imageUuid']
         except IndexError:
