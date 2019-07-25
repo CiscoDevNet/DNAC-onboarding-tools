@@ -57,13 +57,23 @@ def add_device(dnac, name, serial, pid, top_of_stack):
 # type="stackSwitch"
 # "licenseLevel":"",
 # "topOfStackSerialNumber":"",
-def claim_device(dnac,deviceId, configId, siteId, top_of_stack, params):
+def claim_device(dnac,deviceId, configId, siteId, top_of_stack, image, params):
+    if image is not None and image is not "":
+        logging.debug("looking for imageid for {}".format(image))
+        response = get(dnac, 'image/importation?imageName={0}'.format(image))
+        try:
+            imageid = response.json()['response'][0]['imageUuid']
+        except IndexError:
+            print("Image:{} not found".format(image))
+            return {"Error" : "Imnage:{} nmot found".format(image)}
+    else:
+        imageid =''
 
     payload = {
         "siteId": siteId,
          "deviceId": deviceId,
          "type": "Default",
-         "imageInfo": {"imageId": "", "skip": False},
+         "imageInfo": {"imageId": imageid, "skip": False},
          "configInfo": {"configId": configId, "configParameters": params}
 }
     if top_of_stack is not None:
@@ -76,7 +86,7 @@ def claim_device(dnac,deviceId, configId, siteId, top_of_stack, params):
     return claim.json()['response']
 
 def find_template_name(data, templateName):
-
+    # the order of attributes is random.  need to search the children.
     for attr in data:
         if 'key' in attr:
             if attr['key'] == 'day0.templates':
@@ -144,11 +154,15 @@ def create_and_upload(dnac, site_cache, devices):
                 top_of_stack = device_row['topOfStack']
             else:
                 top_of_stack = None
+            if 'image' in device_row:
+                image = device_row['image']
+            else:
+                image = None
             # add device to PnP
             deviceId = add_device(dnac, device_row['name'], device_row['serial'], device_row['pid'], top_of_stack)
             if deviceId is not None:
                 #claim the device if sucessfully added
-                claim_status = claim_device(dnac, deviceId, configId, siteId, top_of_stack, params)
+                claim_status = claim_device(dnac, deviceId, configId, siteId, top_of_stack, image, params)
                 if "Claimed" in claim_status:
                     status = "PLANNED"
                 else:
