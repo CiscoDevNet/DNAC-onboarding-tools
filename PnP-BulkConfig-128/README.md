@@ -23,8 +23,31 @@ The script will recognise template variables and fill them in from the CSV file.
 
 NOTE: Make sure the template is not empty.
 
+## Getting started
+I also recommend using virtualenv.  Use the following commands as examples
+
+```buildoutcfg
+virtualenv -p python3 env
+source env/bin/activate
+```
+
+To install:
+
+```buildoutcfg
+pip install -r requirements.txt
+```
+
+You will need to edit the dnac_config.py file to change your credentials.
+NOTE:  You can also use environment variables for these parameters too.
+   DNAC, DNAC_USER, DNAC_PASSWORD will be looked at first.
+   export DNAC_PASSWORD="mysecrete" for example
+
+
 ## work_files
-Contains the inventory files.  These are CSV files with the device name, serial number, pid, Location, workflow and any variables required for the workflow template
+Contains the inventory files.  These are CSV files with the device name, serial number, pid, Location, workflow 
+and any variables required for the workflow template.
+
+I have recently updated these to support both stack renumbering and image upgrade.
 
 ## running the scripts
 ./10_add_and_claim.py work_files/test.csv
@@ -33,8 +56,10 @@ creates a pnp device rule and then claims it with a workflow and template variab
 
 you need to define the workflow and the template used.
 
-./12_delete.py <serialnumber>
+./11_show_config.py <serialnumber>
 shows the rendered configuration for the device with serial number <serialnumber>.
 
 ./12_delete.py work_files/test.csv
 cleans up afterwards. deleting pnp rules for all devices in the csv file
+
+
