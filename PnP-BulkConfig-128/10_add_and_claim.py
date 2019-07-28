@@ -24,6 +24,19 @@ class SiteCache:
         else:
             raise ValueError("Cannot find site:{}".format(fqSiteName))
 
+class ImageCache:
+    def __init__(self, dnac):
+        self._cache = {}
+        response = get(dnac, "image/importation")
+        sites = response.json()['response']
+        for s in sites:
+            self._cache[s['name']] =  s['imageUuid']
+    def lookup(self, imagename):
+        if imagename in self._cache:
+            return self._cache[imagename]
+        else:
+            raise ValueError("Cannot find image:{}".format(imagename))
+
 def add_device(dnac, name, serial, pid, top_of_stack):
     if top_of_stack is None:
         stack = False
@@ -57,23 +70,23 @@ def add_device(dnac, name, serial, pid, top_of_stack):
 # type="stackSwitch"
 # "licenseLevel":"",
 # "topOfStackSerialNumber":"",
-def claim_device(dnac,deviceId, configId, siteId, top_of_stack, image, params):
-    if image is not None and image is not "":
-        logging.debug("looking for imageid for {}".format(image))
-        response = get(dnac, 'image/importation?name={0}'.format(image))
-        try:
-            imageid = response.json()['response'][0]['imageUuid']
-        except IndexError:
-            print("Image:{} not found".format(image))
-            return {"Error" : "Imnage:{} nmot found".format(image)}
-    else:
-        imageid =''
+def claim_device(dnac,deviceId, configId, siteId, top_of_stack, imageId, params):
+    # if image is not None and image is not "":
+    #     logging.debug("looking for imageid for {}".format(image))
+    #     response = get(dnac, 'image/importation?name={0}'.format(image))
+    #     try:
+    #         imageid = response.json()['response'][0]['imageUuid']
+    #     except IndexError:
+    #         print("Image:{} not found".format(image))
+    #         return {"Error" : "Imnage:{} nmot found".format(image)}
+    # else:
+    #     imageid =''
 
     payload = {
         "siteId": siteId,
          "deviceId": deviceId,
          "type": "Default",
-         "imageInfo": {"imageId": imageid, "skip": False},
+         "imageInfo": {"imageId": imageId, "skip": False},
          "configInfo": {"configId": configId, "configParameters": params}
 }
     if top_of_stack is not None:
@@ -132,7 +145,7 @@ def get_template(dnac, configId, supplied_params):
     #print params
     return params
 
-def create_and_upload(dnac, site_cache, devices):
+def create_and_upload(dnac, site_cache, image_cache, devices):
 
     f = open(devices, 'rt')
     try:
@@ -142,6 +155,11 @@ def create_and_upload(dnac, site_cache, devices):
 
             try:
                 siteId = site_cache.lookup(device_row['siteName'])
+                #image is optional
+                if 'image' in device_row and device_row['image'] != '':
+                    imageId = image_cache.lookup(device_row['image'])
+                else:
+                    imageId = ''
 
             except ValueError as e:
                 print("##ERROR {},{}: {}".format(device_row['name'],device_row['serial'], e))
@@ -154,15 +172,12 @@ def create_and_upload(dnac, site_cache, devices):
                 top_of_stack = device_row['topOfStack']
             else:
                 top_of_stack = None
-            if 'image' in device_row:
-                image = device_row['image']
-            else:
-                image = None
+
             # add device to PnP
             deviceId = add_device(dnac, device_row['name'], device_row['serial'], device_row['pid'], top_of_stack)
             if deviceId is not None:
                 #claim the device if sucessfully added
-                claim_status = claim_device(dnac, deviceId, configId, siteId, top_of_stack, image, params)
+                claim_status = claim_device(dnac, deviceId, configId, siteId, top_of_stack, imageId, params)
                 if "Claimed" in claim_status:
                     status = "PLANNED"
                 else:
@@ -194,9 +209,10 @@ if __name__ == "__main__":
     logger.debug("Logging enabled")
     dnac = login()
     site_cache = SiteCache(dnac)
+    image_cache = ImageCache(dnac)
 
 
     print ("Using device file:", args.devices)
 
     print ("##########################")
-    create_and_upload(dnac, site_cache, devices=args.devices)
+    create_and_upload(dnac, site_cache, image_cache, devices=args.devices)
