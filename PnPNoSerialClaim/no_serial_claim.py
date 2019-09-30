@@ -12,9 +12,11 @@ from utils import login, get, post, delete
 
 
 def get_file_id(dnac, file_name):
+    logging.debug("looking for config file:{}".format(file_name))
     response = get(dnac, "dna/intent/api/v1/file/namespace/config")
     for file in response.json()['response']:
         if file['name'] == file_name:
+            logging.debug("found file:{}".format(file['id']))
             return file['id']
     raise ValueError("Cannot find configuration file:{}".format(file_name))
 
@@ -76,7 +78,8 @@ def create_workflow(dnac, device_ip, interface, file_id):
             "taskSeqNo": 0
         }
     ],
-    "addToInventory": True
+    "addToInventory": True # changed for testing ADAM
+    #"addToInventory": False
 }
     logging.debug(json.dumps(payload))
     response = post(dnac, "dna/intent/api/v1/onboarding/pnp-workflow", payload)
@@ -102,7 +105,8 @@ def claim_device(dnac, device_id, workflow_id):
       "deviceId": device_id
     }
   ],
-  "populateInventory": True,
+  "populateInventory": True,  # changed for testing ADAM
+  #"populateInventory": False,
   "imageId": None,
   "projectId": None,
   "configId": None
@@ -125,7 +129,10 @@ def poll_and_wait(dnac, mapping):
         ip_address = device['deviceInfo']['httpHeaders'][0]['value']
         ip = IPAddress(ip_address)
 
-        cdp_links = [ link['remoteInterfaceName'] for link in device['deviceInfo']['neighborLinks']]
+        try:
+            cdp_links = [ link['remoteInterfaceName'] for link in device['deviceInfo']['neighborLinks']]
+        except KeyError:
+            cdp_links = []
 
         print("Trying to find mapping for {}/{}".format(ip,cdp_links))
         for network_cdp in mapping.keys():
