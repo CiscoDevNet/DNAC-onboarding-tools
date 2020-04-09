@@ -1,3 +1,3 @@
 name,serial,pid,siteName,image,templateName,hostname
 3560_with_image,F002223E04t,WS-3560,Global/AUS/NSYD1,c3560cx-universalk9-mz.152-6.E.bin,switch-branch,9k-tor
-3560_no_image,F002223E04r,WS-3560,Global/AUS/NSYD1,,switch-branch,9k-tor
+3560_no_image,F002223E04r,WS-3560,Global/AUS/NSYD1,,switch-branch,9k-tor1

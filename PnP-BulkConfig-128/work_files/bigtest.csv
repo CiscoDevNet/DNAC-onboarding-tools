@@ -1,11 +1,11 @@
 name,serial,pid,siteName,templateName,hostname,loopback
-auto_python0,12345678910,WS-C3650,Global/Sydney/NSYD5,basic,pnp-stack,10.10.100.200
-auto_python1,12345678911,WS-C3650,Global/Sydney/NSYD5,basic,pnp-stack,10.10.100.201
-auto_python2,12345678912,WS-C3650,Global/Sydney/NSYD5,basic,pnp-stack,10.10.100.202
-auto_python3,12345678913,WS-C3650,Global/Sydney/NSYD5,basic,pnp-stack,10.10.100.203
-auto_python4,12345678914,WS-C3650,Global/Sydney/NSYD5,basic,pnp-stack,10.10.100.204
-auto_python5,12345678915,WS-C3650,Global/Sydney/NSYD5,basic,pnp-stack,10.10.100.205
-auto_python6,12345678916,WS-C3650,Global/Sydney/NSYD5,basic,pnp-stack,10.10.100.206
-auto_python7,12345678917,WS-C3650,Global/Sydney/NSYD5,basic,pnp-stack,10.10.100.207
-auto_python8,12345678918,WS-C3650,Global/Sydney/NSYD5,basic,pnp-stack,10.10.100.208
+auto_python0,12345678910,WS-C3650,Global/AUS/NSYD5,basic,pnp-stack,10.10.100.200
+auto_python1,12345678911,WS-C3650,Global/AUS/NSYD5,basic,pnp-stack,10.10.100.201
+auto_python2,12345678912,WS-C3650,Global/AUS/NSYD5,basic,pnp-stack,10.10.100.202
+auto_python3,12345678913,WS-C3650,Global/AUS/NSYD5,basic,pnp-stack,10.10.100.203
+auto_python4,12345678914,WS-C3650,Global/AUS/NSYD5,basic,pnp-stack,10.10.100.204
+auto_python5,12345678915,WS-C3650,Global/AUS/NSYD5,basic,pnp-stack,10.10.100.205
+auto_python6,12345678916,WS-C3650,Global/AUS/NSYD5,basic,pnp-stack,10.10.100.206
+auto_python7,12345678917,WS-C3650,Global/AUS/NSYD5,basic,pnp-stack,10.10.100.207
+auto_python8,12345678918,WS-C3650,Global/AUS/NSYD5,basic,pnp-stack,10.10.100.208
 
