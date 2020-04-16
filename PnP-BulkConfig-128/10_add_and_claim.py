@@ -101,12 +101,14 @@ def claim_device(dnac,deviceId, configId, siteId, top_of_stack, imageId, params)
 def find_template_name(data, templateName):
     # the order of attributes is random.  need to search the children.
     for attr in data:
+        logger.debug("ATTR:" +json.dumps(attr, indent=2) )
         if 'key' in attr:
             if attr['key'] == 'day0.templates':
                 for dev in attr['attribs']:
                     # DeviceFamily/DeviceSeries/DeviceType
                     #template = dev['attribs'][0]['attribs'][0]['attribs'][0]
                     for template in dev['attribs'][0]['attribs'][0]['attribs']:
+                        logger.debug(json.dumps(template, indent=2))
                         if template['key'] == 'template.id':
                             for templ_attrs in template['attribs']:
                                 if templ_attrs['key'] == 'template.name' and templ_attrs['value'] == templateName:
@@ -127,7 +129,7 @@ def find_site_template(dnac, siteId, templateName):
         raise ValueError("Cannot find Network profile for siteId:{}".format(siteId))
 
     # need to be careful here.  WLAN profiles also apply to a site.  need to filter them
-    wired_site_profile = [ site for site in response.json()['response'] if site['namespace'] != "wlan"]
+    wired_site_profile = [ site for site in response.json()['response'] if site['namespace'] != "wlan" and site['namespace'] != "routing"]
 
     # now need to find the template
     data = wired_site_profile[0]['profileAttributes']
