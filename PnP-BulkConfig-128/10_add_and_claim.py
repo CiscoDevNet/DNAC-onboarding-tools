@@ -44,7 +44,7 @@ def add_device(dnac, name, serial, pid, top_of_stack):
         stack = True
     payload = [{
 	"deviceInfo": {
-		"name": name,
+		"hostname": name,
 		"serialNumber": serial,
 		"pid": pid,
 		"sudiRequired": False,
