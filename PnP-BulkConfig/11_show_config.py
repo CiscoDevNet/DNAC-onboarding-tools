@@ -9,20 +9,25 @@ from utils import login, get, put
 
 def get_config(dnac,templateId, params):
     body = {
-             "templateId": templateId,
-            "params": params
+            "params": params,
+             "templateId": templateId
                 }
+    print(body)
     response = put(dnac, "template-programmer/template/preview", payload=json.dumps(body))
-    print (response.json()['cliPreview'])
+    print(response.json()['cliPreview'])
 
 def get_device(dnac, serial):
     params = {}
-    response = get(dnac, "onboarding/pnp-device?serialNumber={}".format(serial))
+    response = get(dnac, "onboarding/pnp-device?{}".format(serial))
+    data = response.json()
+    print(json.dumps(data, indent=4))
     try:
         device = response.json()[0]['workflowParameters']['configList']
         templateId = device[0]['configId']
+        print(templateId)
         for p in device[0]['configParameters']:
             params[p['key']] = p['value']
+        print(params)
         return templateId, params
     except KeyError:
         print("Cannot find tempate for device serial {}".format(serial))

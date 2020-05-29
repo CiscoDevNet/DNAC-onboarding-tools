@@ -55,14 +55,22 @@ def claim_device(dnac,deviceId, configId, workflowId, params):
     return claim.json()['message']
 
 def get_workflow(dnac,workflowName):
-    response = get (dnac, "onboarding/pnp-workflow")
+    response = get(dnac, "onboarding/pnp-workflow")
     for workflow in response.json():
         if workflow['name'] == workflowName:
             workflowId = workflow['id']
-            #print json.dumps(workflow, indent=4)
-            for tasks in workflow['tasks']:
-                configId = tasks['configInfo']['configId']
-            return workflowId, configId
+            print("Workflow ID is: ", workflowId)
+            print(json.dumps(workflow, indent=4))
+            for eachvalue in workflowId:
+                taskname = json.loads(workflow['tasks'][1]['configInfo']['configId'])
+                print("Task name is: ", taskname)
+            #for configId in str(['tasks']['configInfo']['configId']):
+            #    print("ConfigID is: ", configId)
+            #configId = workflowId['tasks']['configInfo']['configId']
+            #print(configId)
+            #for tasks in workflow['tasks']:
+            #    configId = tasks['configInfo']['configId']
+            #return workflowId, configId
 
     raise ValueError("Cannot find template:{}".format(workflowName))
 
@@ -81,7 +89,7 @@ def create_and_upload(dnac, devices):
     try:
         reader = csv.DictReader(f)
         for device_row in reader:
-            #print ("Variables:",device_row)
+            print("Variables:",device_row)
 
             try:
                 workflowId, configId = get_workflow(dnac, device_row['workflow'])
@@ -115,5 +123,5 @@ if __name__ == "__main__":
     dnac = login()
     print ("Using device file:", args.devices)
 
-    print ("##########################")
+    print("##########################")
     create_and_upload(dnac, devices=args.devices)

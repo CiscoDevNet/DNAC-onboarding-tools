@@ -29,10 +29,13 @@ def create_url(path, controller_ip=DNAC):
 
 
 def get_auth_token(controller_ip=DNAC, username=DNAC_USER, password=DNAC_PASSWORD):
-    """ Authenticates with controller and returns a token to be used in subsequent API invocations
+    """ Authenticates with controller and returns a token to be used in subsequent API invocations.
+    v 1.3.3.x /dna/system/api/v1/auth/token
+    v 1.2.x.x /api/system/v1/auth/token
     """
 
-    login_url = "https://{0}:{1}/api/system/v1/auth/token".format(controller_ip, DNAC_PORT)
+    login_url = "https://{0}:{1}/dna/system/api/v1/auth/token".format(controller_ip, DNAC_PORT)
+    print("You're logging into: ", login_url)
     result = requests.post(url=login_url, auth=HTTPBasicAuth(DNAC_USER, DNAC_PASSWORD), verify=False, timeout=20)
     result.raise_for_status()
 
